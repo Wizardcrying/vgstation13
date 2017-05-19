@@ -116,6 +116,7 @@ var/list/admin_verbs_fun = list(
 	/client/proc/mommi_static,
 	/client/proc/makepAI,
 	/client/proc/set_blob_looks,
+	/client/proc/make_hallucinatory_being,
 	)
 var/list/admin_verbs_spawn = list(
 	/datum/admins/proc/spawn_atom, // Allows us to spawn instances
@@ -276,7 +277,8 @@ var/list/admin_verbs_hideable = list(
 	/proc/release,
 	/client/proc/gc_dump_hdl,
 	/client/proc/debug_pooling,
-	/client/proc/create_map_element
+	/client/proc/create_map_element,
+	/client/proc/make_hallucinatory_being,
 	)
 var/list/admin_verbs_mod = list(
 	/client/proc/cmd_admin_pm_context,	/*right-click adminPM interface*/
@@ -753,6 +755,24 @@ var/list/admin_verbs_mod = list(
 	log_admin("[key_name(usr)] made [O] at [O.x], [O.y], [O.z] say \"[message]\"")
 	message_admins("<span class='adminnotice'>[key_name_admin(usr)] made [O] at [O.x], [O.y], [O.z]. say \"[message]\"</span>", 1)
 	feedback_add_details("admin_verb","OT") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
+
+/client/proc/make_hallucinatory_being() // - Wizard
+	set category = "Special Verbs"
+	set name = "Make Hallucinatory Being"
+	set desc = "Make a mob imaginary to someone or an object speak a voice in someone's head."
+	animateornot = alert("Which will be the voice to speak?","test","Mob","Object")
+
+	if(animateornot == "Mob")//copy-pasting from Haunt
+		var/list/mobs = getmobs()
+		var/inputone = input("Select a mob to be the visitor.", "The Senses", null, null) as null|anything in mobs
+		var/mob/imagined = mobs[inputone]
+		var/inputtwo = input("Select the mob to be visited.", "The Sensor", null, null) as null|anything in mobs
+		var/mob/imaginator = mobs[inputtwo]
+
+	else if(animateornot == "Object")
+
+	message_admins("<span class='adminnotice'>[key_name(usr)] made [imagined] at [imagined.x], [imagined.y], [imagined.z] into a hallucination of [imaginator]'s own mind</span>")
+	feedback_add_details("admin_verb","HB") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/kill_air() // -- TLE
 	set category = "Debug"
